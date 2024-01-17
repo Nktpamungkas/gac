@@ -30,9 +30,13 @@ class Auth extends CI_Controller
     {
         $name       = $this->input->post('name');
         $password   = $this->input->post('password');
+        $ip         = $_SERVER['REMOTE_ADDR'];
 
-        $user = $this->db->get_where('user', array('name' => $name))->row_array();
-        
+        if($name == 'ari' OR $name == 'nilo'){
+            $user = $this->db->query("SELECT * FROM user WHERE `name` = '$name' AND ip = '$ip'")->row_array();
+        }else{
+            $user = $this->db->query("SELECT * FROM user WHERE `name` = '$name'")->row_array();
+        }
         // Script logged
         $dataLogged = array(
             'logged'    => '1'
@@ -47,10 +51,16 @@ class Auth extends CI_Controller
                 if ($password == $user['password']) {
                     $data = array(
                         'name' => $user['name'],
-                        'role_id' => $user['role_id']
+                        'role_id' => $user['role_id'],
+                        'situs' => $user['situs']
                     );
                     $this->session->set_userdata($data);
-                    redirect('tugas/tiket');
+
+                    if($user['situs'] == 'JualBarang'){
+                        redirect('tugas/index_limbahpadat', $data);
+                    }elseif ($user['situs'] == 'Tiket') {
+                        redirect('tugas/tiket', $data);
+                    }
                 } else {
                     $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert">Password Salah!</center>');
                     redirect('auth');

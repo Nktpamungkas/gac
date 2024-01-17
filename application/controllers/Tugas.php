@@ -87,9 +87,15 @@ class Tugas extends CI_Controller
                     $prioritas = 0;
                 }
                 $id_mesin = $this->input->post('id_mesin', true).$this->input->post('id_mesinmanual', true);
+                $tglopentiket = $this->input->post('tgl_openticket', true);
+                if(!empty($tglopentiket)){
+                    $tgl_openticket = $this->input->post('tgl_openticket', true);
+                }else{
+                    $tgl_openticket = date('Y-m-d H:i:s');
+                }
                 $result_save = array( // Simpan tugas
                     'prioritas'         => $prioritas,
-                    'tgl_mulai'         => mdate('%Y-%m-%d %H:%i:%s %A'),
+                    'tgl_mulai'         => $tgl_openticket,
                     'kategori'          => $this->input->post('kategori', true),
                     'dept'              => $this->input->post('dept', true),
                     'nama_pelapor'      => $this->input->post('nama_pelapor', true),
@@ -255,11 +261,229 @@ class Tugas extends CI_Controller
     public function tiket()
     {
         $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
-
         $data['title'] = 'Halaman Utama';
         $this->load->view('template/header_Auth', $data);
         $this->load->view('auth/tiket');
         $this->load->view('template/footer_Auth');
+    }
+    
+    public function index_limbahpadat(){
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+        $data['title'] = 'Daftar Limbah Padat';
+        $data['menu'] = 'class="active"';
+        $this->load->view('template/header_barang', $data);
+        $this->load->view('auth/barang');
+    }
+
+    public function tambah_limbahpadat(){
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+        $data['title'] = 'Tambah data Daftar Limbah Padat';
+        $data['menu'] = 'class="active"';
+        $this->load->view('template/header_barang', $data);
+        $this->load->view('auth/tambah_limbahpadat');
+    }
+
+    public function tambahDaftarLimbahPadat(){
+        $nama_muatan            = $this->input->post('nama_muatan', true);
+        $kategori               = $this->input->post('kategori', true);
+        $satuan                 = $this->input->post('satuan', true);
+        $satuan_timbang         = $this->input->post('satuan_timbang', true);
+        $kontraktor             = $this->input->post('kontraktor', true);
+        $pic                    = $this->input->post('pic', true);
+        $harga                  = $this->input->post('harga', true);
+        $keterangan             = $this->input->post('keterangan', true);
+        $createdatetime         = date('Y-m-d H:i:s');
+        $ipaddress              = $_SERVER['REMOTE_ADDR'];
+
+        $result = $this->db->query("INSERT INTO tbl_daftarlimbahpadat (nama_muatan,
+                                                                        kategori,
+                                                                        satuan,
+                                                                        satuan_timbang,
+                                                                        kontraktor,
+                                                                        pic,
+                                                                        harga,
+                                                                        keterangan,
+                                                                        createdatetime,
+                                                                        ipaddress)
+                                                            VALUES ('$nama_muatan',
+                                                                    '$kategori',
+                                                                    '$satuan',
+                                                                    '$satuan_timbang',
+                                                                    '$kontraktor',
+                                                                    '$pic',
+                                                                    '$harga',
+                                                                    '$keterangan',
+                                                                    '$createdatetime',
+                                                                    '$ipaddress')");
+        if($result){
+            $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Data Limbah Padat berhasil dibuat.</b></center>');
+            redirect($this->agent->referrer()); 
+        }else{
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$result['error'].'</b></center>');
+            redirect($this->agent->referrer()); 
+        }
+        
+    }
+
+    public function edit_limbahpadat($id){
+        $data['id'] = $id; 
+        $data['title'] = 'Edit data Daftar Limbah Padat';
+        $data['menu'] = 'class="active"';
+        $this->load->view('template/header_barang', $data);
+        $this->load->view('auth/edit_limbahpadat');
+    }
+
+    public function editDaftarLimbahPadat($id){
+        $nama_muatan            = $this->input->post('nama_muatan', true);
+        $kategori               = $this->input->post('kategori', true);
+        $satuan                 = $this->input->post('satuan', true);
+        $satuan_timbang         = $this->input->post('satuan_timbang', true);
+        $kontraktor             = $this->input->post('kontraktor', true);
+        $pic                    = $this->input->post('pic', true);
+        $harga                  = $this->input->post('harga', true);
+        $keterangan             = $this->input->post('keterangan', true);
+        $lastupdatedatetime     = date('Y-m-d H:i:s');
+        $ipaddress              = $_SERVER['REMOTE_ADDR'];
+
+        $result = $this->db->query("UPDATE tbl_daftarlimbahpadat SET nama_muatan = '$nama_muatan',
+                                                                    kategori = '$kategori',
+                                                                    satuan = '$satuan',
+                                                                    satuan_timbang = '$satuan_timbang',
+                                                                    kontraktor = '$kontraktor',
+                                                                    pic = '$pic',
+                                                                    harga = '$harga',
+                                                                    keterangan = '$keterangan',
+                                                                    lastupdatedatetime = '$lastupdatedatetime',
+                                                                    ipaddress = '$ipaddress'
+                                                                WHERE id = '$id'");
+        if($result){
+            $this->session->set_flashdata('message', '<center class="alert alert-warning" role="alert"><b>Data Limbah Padat berhasil di ubah.</b></center>');
+            redirect($this->agent->referrer()); 
+        }else{
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$result['error'].'</b></center>');
+            redirect($this->agent->referrer()); 
+        }
+        
+    }
+
+    public function hapus_limbahpadat($id){
+        $this->db->where('id', $id);
+        $hapus = $this->db->delete('tbl_daftarlimbahpadat');
+        if($hapus){
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>Data berhasil di hapus.</b></center>');
+            redirect($this->agent->referrer()); 
+        }else{
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$return['error'].'</b></center>');
+            redirect($this->agent->referrer()); 
+        }
+    }
+
+    public function transaksi_limbahpadat(){
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+        $data['title'] = 'Transaksi';
+        $data['menuTransaksi'] = 'class="active"';
+        $this->load->view('template/header_barang', $data);
+        $this->load->view('auth/transaksi');
+    }
+
+    public function tambah_transaksi(){
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+        $data['title'] = 'Tambah data Transaksi';
+        $data['menu'] = 'class="active"';
+        $this->load->view('template/header_barang', $data);
+        $this->load->view('auth/tambah_transaksi');
+    }
+    
+    public function edit_transaksi($no_sj){
+        $data['no_sj'] = $no_sj; 
+        $data['title'] = 'Edit data Transaksi';
+        $this->load->view('template/header_barang', $data);
+        $this->load->view('auth/edit_transaksi');
+    }
+
+    public function edittransaksi(){
+        $result1    = $this->db->query("UPDATE tbl_transaksi SET tgl = '$tgl', 
+                                                                nama_hj = '$nama_hj'
+                                                            WHERE 
+                                                                no_sj = '$no_sj'");
+        $this->db->trans_start();
+            $id             = $this->input->post('id', true);
+            $no_sj          = $this->input->post('no_sj', true);
+            $tgl            = $this->input->post('tgl', true);
+            $nama_hj        = $this->input->post('nama_hj', true);
+            $nama_barang    = $this->input->post('nama_barang', true);
+            $qty            = $this->input->post('qty', true);
+            $value          = array();
+            $index          = 0;
+            foreach ($id as $key) {
+                array_push($value, array(
+                    'id'            => $key,
+                    'no_sj'         => $no_sj,
+                    'tgl'           => $tgl,
+                    'nama_hj'       => $nama_hj,
+                    'nama_barang'   => $nama_barang[$index],
+                    'qty'           => $qty[$index]
+                ));
+                $index++;
+            }
+            $result2 = $this->db->update_batch('tbl_transaksi', $value, 'id');
+        $this->db->trans_complete();
+
+        if($result1 && $result2){
+            $this->session->set_flashdata('message', '<center class="alert alert-warning" role="alert"><b>Data Limbah Padat berhasil di ubah.</b></center>');
+            redirect($this->agent->referrer()); 
+        }else{
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$result1['error'].'</b></center>');
+            redirect($this->agent->referrer()); 
+        }
+    }
+    
+    public function hapus_transaksi($no_sj){
+        $this->db->where('no_sj', $no_sj);
+        $hapus = $this->db->delete('tbl_transaksi');
+        if($hapus){
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>Data berhasil di hapus.</b></center>');
+            redirect($this->agent->referrer()); 
+        }else{
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$hapus['error'].'</b></center>');
+            redirect($this->agent->referrer()); 
+        }
+    }
+
+    public function tambahtransaksi(){
+        $this->db->trans_start();
+            $data_namabarang    = $this->input->post('nama_barang', true);
+            $data_qty           = $this->input->post('qty', true);
+            $value              = array();
+            $index              = 0; 
+            foreach ($data_namabarang as $key) {
+                array_push($value, array(
+                    'no_sj'         => $this->input->post('no_sj', true),
+                    'tgl'           => $this->input->post('tgl', true),
+                    'nama_hj'       => $this->input->post('nama_hj', true),
+                    'nama_barang'   => $key,
+                    'qty'           => $data_qty[$index],
+                    'status'        => '1'
+                ));
+                $index++;
+            }
+            $result = $this->db->insert_batch('tbl_transaksi', $value);
+        $this->db->trans_complete();
+
+        if($result){
+            $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Transaksi Berhasil.</b></center>');
+            redirect($this->agent->referrer()); 
+        }else{
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$result['error'].'</b></center>');
+            redirect($this->agent->referrer()); 
+        }
+    }
+
+    public function print_transaksi($no_sj){
+        $data['no_sj'] = $no_sj; 
+        $data['title'] = 'Print Surat Pengantar';
+        // $this->load->view('template/header_barang');
+        $this->load->view('auth/print_transaksi', $data);
     }
 
     public function cektiket()

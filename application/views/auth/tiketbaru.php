@@ -196,6 +196,12 @@
                                 </div> -->
                             </div>
                             <div class="box-body">
+                                <?php if($_SERVER['REMOTE_ADDR'] == '10.0.5.132' OR $_SERVER['REMOTE_ADDR'] == '10.0.5.168') : ?>
+                                    <div class="form-group col-sm-12">
+                                        <input type="datetime-local" class="form-control input-sm" name="tgl_openticket">
+                                    </div>
+                                <?php endif; ?>
+                                
                                 <div class="form-group col-sm-12" id="select_box">
                                     <select class="form-control" style="width: 100%;" name="kategori" id="kategori" required>
                                         <?php $return = $this->db->query('SELECT * FROM kategori')->result_array(); ?>
