@@ -48,7 +48,7 @@
                     }
                 });
             } else if (kat == 'Kebersihan'){
-                document.getElementById("fileku1").setAttribute("required", "required"); //jika pilihannya kebersihan maka diwajibkan melampirkan minimal 1 foto
+                // document.getElementById("fileku1").setAttribute("required", "required"); //jika pilihannya kebersihan maka diwajibkan melampirkan minimal 1 foto
                 $.ajax({
                     dataType: "JSON",
                     type: 'POST',
