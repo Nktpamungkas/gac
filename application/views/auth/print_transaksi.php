@@ -59,8 +59,8 @@
             ?>
             <?php foreach($return AS $row_transaksi) : ?>
             <tr>
-                <td style="width: 10%;">&nbsp;</td>
-                <td style="width: 10%;"><?= $row_transaksi['qty'] ?> <?= $row_transaksi['satuan'] ?></td>
+                <td style="width: 7%; ">&nbsp;</td>
+                <td style="width: 13%; text-align: right;"><?= $row_transaksi['qty'] ?> <?= $row_transaksi['satuan'] ?>&nbsp;&nbsp;&nbsp;</td>
                 <td style="width: 63.8%;"><?= $row_transaksi['nama_muatan'] ?>&nbsp;@ Rp. <?= $row_transaksi['harga_satuan'] ?></td>
                 <td style="text-align: right;">Rp. </td>
                 <td style="text-align: right;"><?= $row_transaksi['total_harga'] ?></td>
