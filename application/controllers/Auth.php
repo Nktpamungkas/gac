@@ -30,13 +30,13 @@ class Auth extends CI_Controller
     {
         $name       = $this->input->post('name');
         $password   = $this->input->post('password');
-        $ip         = $_SERVER['REMOTE_ADDR'];
+        // $ip         = $_SERVER['REMOTE_ADDR'];
 
-        if($name == 'ari' OR $name == 'nilo'){
-            $user = $this->db->query("SELECT * FROM user WHERE `name` = '$name' AND ip = '$ip'")->row_array();
-        }else{
+        // if($name == 'ari' OR $name == 'nilo'){
+            // $user = $this->db->query("SELECT * FROM user WHERE `name` = '$name' AND ip = '$ip'")->row_array();
+        // }else{
             $user = $this->db->query("SELECT * FROM user WHERE `name` = '$name'")->row_array();
-        }
+        // }
         // Script logged
         $dataLogged = array(
             'logged'    => '1'
