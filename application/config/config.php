@@ -26,8 +26,8 @@ date_default_timezone_set('Asia/Jakarta');
 /*
 | Jika ingin bisa buka di hp gunakan ip address jangan menggunakan nama alias
 */
-// $config['base_url'] = 'http://project/project/gac/';
-$config['base_url'] = 'https://online.indotaichen.com/gac/';
+$config['base_url'] = 'http://localhost/project/gac/';
+// $config['base_url'] = 'https://online.indotaichen.com/gac/';
 
 /*
 |--------------------------------------------------------------------------
