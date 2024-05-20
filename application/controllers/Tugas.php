@@ -8,6 +8,7 @@ class Tugas extends CI_Controller
     {
         parent::__construct();
         $this->load->library('form_validation');
+        $this->load->model('InputLimbah_model');
     }
 
     public function tambahMaster()
@@ -28,12 +29,12 @@ class Tugas extends CI_Controller
         );
         $save = $this->db->insert('mesin', $result_save);
 
-        if($save){
+        if ($save) {
             $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Data Master berhasil dibuat.</b></center>');
-            redirect($this->agent->referrer()); 
-        }else{
-            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$return['error'].'</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
+        } else {
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $return['error'] . '</b></center>');
+            redirect($this->agent->referrer());
         }
     }
 
@@ -41,12 +42,12 @@ class Tugas extends CI_Controller
     {
         $this->db->where('id', $id);
         $hapus = $this->db->delete('mesin');
-        if($hapus){
+        if ($hapus) {
             $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>File berhasil di hapus.</b></center>');
-            redirect($this->agent->referrer()); 
-        }else{
-            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$return['error'].'</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
+        } else {
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $return['error'] . '</b></center>');
+            redirect($this->agent->referrer());
         }
     }
 
@@ -73,84 +74,83 @@ class Tugas extends CI_Controller
         $type_file2     = $return2['file']['file_type'];
 
         // Get name computer untuk menampilkan tiket berdasarkan nama departemen dikomputernya
-        $get_nameComp   = substr(gethostbyaddr($_SERVER['REMOTE_ADDR']), 2,3); 
+        $get_nameComp   = substr(gethostbyaddr($_SERVER['REMOTE_ADDR']), 2, 3);
 
         // if($return['file']['file_name'] && $return2['file']['file_name']){ //Jika file upload tersedia
-            if($return['result'] == "success" && $return2['result'] == "success"){ // Jika proses upload sukses
-                $tanggal_mulau = $this->input->post('tgl_mulai', true);
-                $value = "$tanggal_mulau";
-                $convert_tanggalmulai = date("Y-m-d", strtotime($value));
+        if ($return['result'] == "success" && $return2['result'] == "success") { // Jika proses upload sukses
+            $tanggal_mulau = $this->input->post('tgl_mulai', true);
+            $value = "$tanggal_mulau";
+            $convert_tanggalmulai = date("Y-m-d", strtotime($value));
 
-                if ($this->input->post('prioritas', true) == "prioritas") {
-                    $prioritas = 1;
+            if ($this->input->post('prioritas', true) == "prioritas") {
+                $prioritas = 1;
+            } else {
+                $prioritas = 0;
+            }
+            $id_mesin = $this->input->post('id_mesin', true) . $this->input->post('id_mesinmanual', true);
+            $tglopentiket = $this->input->post('tgl_openticket', true);
+            if (!empty($tglopentiket)) {
+                $tgl_openticket = $this->input->post('tgl_openticket', true);
+            } else {
+                $tgl_openticket = date('Y-m-d H:i:s');
+            }
+            $result_save = array( // Simpan tugas
+                'prioritas'         => $prioritas,
+                'tgl_mulai'         => $tgl_openticket,
+                'kategori'          => $this->input->post('kategori', true),
+                'dept'              => $this->input->post('dept', true),
+                'nama_pelapor'      => $this->input->post('nama_pelapor', true),
+                'dept_pelapor'      => $this->input->post('dept_pelapor', true),
+                'email'             => $this->input->post('email', true),
+                'id_mesin'          => $id_mesin,
+                'lokasi'            => $this->input->post('lokasi', true),
+                'permasalahan'      => $this->input->post('permasalahan', true),
+                'lampiran1'         => $nama_lampiran1,
+                'ukuran_file1'      => $ukuran_file1,
+                'tipe_file1'        => $type_file1,
+                'lampiran2'         => $nama_lampiran2,
+                'ukuran_file2'      => $ukuran_file2,
+                'tipe_file2'        => $type_file2,
+                'status'            => "Open"
+            );
+            $q_cekIdMesin   = $this->db->query("SELECT * FROM mesin WHERE id = '$id_mesin'")->row();
+            $q_cek_tiket    = $this->db->query("SELECT count(*) AS tiket FROM tbl_tugas WHERE (`status` = 'Open' OR `status` = 'Progress') AND id_mesin = '$q_cekIdMesin->id'")->row();
+
+            if ($q_cek_tiket->tiket == 0) {
+                $save = $this->db->insert('tbl_tugas', $result_save);
+                $last_id =  $this->db->insert_id();
+
+                if ($save) {
+                    // RIWAYAT TUGAS BARU
+                    $dataRiwayat    = array(
+                        'id_tugas'              => $last_id,
+                        'tanggal'               => mdate('%Y-%m-%d %H:%i:%s %A'),
+                        'dibuat_oleh'           => $this->input->post('dept', true),
+                        'perbarui_disposisi'    => "Tugas Dibuat oleh " . $this->input->post('nama_pelapor', true)
+                    );
+                    $this->db->insert('riwayat', $dataRiwayat);
+
+                    $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Tugas berhasil dibuat.</b></center>');
+
+                    //Jika proses tugas berhasil dirubah
+                    $data['nomortiket'] = $last_id;
+
+                    $data['title'] = 'Detail Tiket';
+                    $this->load->view('template/header_Auth', $data);
+                    $this->load->view('auth/statustiket');
+                    $this->load->view('template/footer_Auth');
                 } else {
-                    $prioritas = 0;
-                }
-                $id_mesin = $this->input->post('id_mesin', true).$this->input->post('id_mesinmanual', true);
-                $tglopentiket = $this->input->post('tgl_openticket', true);
-                if(!empty($tglopentiket)){
-                    $tgl_openticket = $this->input->post('tgl_openticket', true);
-                }else{
-                    $tgl_openticket = date('Y-m-d H:i:s');
-                }
-                $result_save = array( // Simpan tugas
-                    'prioritas'         => $prioritas,
-                    'tgl_mulai'         => $tgl_openticket,
-                    'kategori'          => $this->input->post('kategori', true),
-                    'dept'              => $this->input->post('dept', true),
-                    'nama_pelapor'      => $this->input->post('nama_pelapor', true),
-                    'dept_pelapor'      => $this->input->post('dept_pelapor', true),
-                    'email'             => $this->input->post('email', true),
-                    'id_mesin'          => $id_mesin,
-                    'lokasi'            => $this->input->post('lokasi', true),
-                    'permasalahan'      => $this->input->post('permasalahan', true),
-                    'lampiran1'         => $nama_lampiran1,
-                    'ukuran_file1'      => $ukuran_file1,
-                    'tipe_file1'        => $type_file1,
-                    'lampiran2'         => $nama_lampiran2,
-                    'ukuran_file2'      => $ukuran_file2,
-                    'tipe_file2'        => $type_file2,
-                    'status'            => "Open"
-                );
-                $q_cekIdMesin   = $this->db->query("SELECT * FROM mesin WHERE id = '$id_mesin'")->row();
-                $q_cek_tiket    = $this->db->query("SELECT count(*) AS tiket FROM tbl_tugas WHERE (`status` = 'Open' OR `status` = 'Progress') AND id_mesin = '$q_cekIdMesin->id'")->row(); 
-
-                if($q_cek_tiket->tiket == 0){
-                    $save = $this->db->insert('tbl_tugas', $result_save);
-                    $last_id =  $this->db->insert_id();
-    
-                    if ($save) {
-                        // RIWAYAT TUGAS BARU
-                        $dataRiwayat    = array(
-                            'id_tugas'              => $last_id,
-                            'tanggal'               => mdate('%Y-%m-%d %H:%i:%s %A'),
-                            'dibuat_oleh'           => $this->input->post('dept', true),
-                            'perbarui_disposisi'    => "Tugas Dibuat oleh ".$this->input->post('nama_pelapor', true)
-                        );
-                        $this->db->insert('riwayat', $dataRiwayat);
-    
-                        $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Tugas berhasil dibuat.</b></center>');
-    
-                        //Jika proses tugas berhasil dirubah
-                        $data['nomortiket'] = $last_id;
-    
-                        $data['title'] = 'Detail Tiket';
-                        $this->load->view('template/header_Auth', $data);
-                        $this->load->view('auth/statustiket');
-                        $this->load->view('template/footer_Auth');
-                    } else {
-                        $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$return['error'].'</b></center>');
-                        redirect($this->agent->referrer()); 
-                    }
-                }else{
-                    $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>MESIN SEDANG DIKERJAKAN.<br> SILAHKAN CEK STATUS TIKET ANDA SECARA BERKALA.</b></center>');
+                    $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $return['error'] . '</b></center>');
                     redirect($this->agent->referrer());
                 }
-                
-            } else { // Jika proses upload gagal
-                $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$return['error'].'</b></center>');
-                redirect($this->agent->referrer());  
+            } else {
+                $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>MESIN SEDANG DIKERJAKAN.<br> SILAHKAN CEK STATUS TIKET ANDA SECARA BERKALA.</b></center>');
+                redirect($this->agent->referrer());
             }
+        } else { // Jika proses upload gagal
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $return['error'] . '</b></center>');
+            redirect($this->agent->referrer());
+        }
         // } else { //Jika file upload tidak tersedia
         //         $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Tiket anda tidak berhasil di upload. Silahkan refresh halaman dan ulangi kembali.</b></center>');
         //         redirect($this->agent->referrer()); 
@@ -172,29 +172,29 @@ class Tugas extends CI_Controller
             'permasalahan'      => $this->input->post('permasalahan', true),
         );
 
-        $this->db->where('id', $this->input->post('id', true)); 
+        $this->db->where('id', $this->input->post('id', true));
         $edit = $this->db->update('tbl_tugas', $result_save);
         if ($edit) {
             $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Tugas berhasil diubah.</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
         } else {
-            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$return['error'].'</b></center>');
-            redirect($this->agent->referrer()); 
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $return['error'] . '</b></center>');
+            redirect($this->agent->referrer());
         }
     }
 
     public function edittiket()
     {
-         // Get name computer untuk menampilkan tiket berdasarkan nama departemen dikomputernya
-         $get_nameComp   = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-         
+        // Get name computer untuk menampilkan tiket berdasarkan nama departemen dikomputernya
+        $get_nameComp   = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+
         // RIWAYAT TUGAS BARU
         $dataRiwayat    = array(
             'id_tugas'              => $this->input->post('id', true),
             'tanggal'               => mdate('%Y-%m-%d %H:%i:%s %A'),
             'dibuat_oleh'           => $get_nameComp,
             'perbarui_disposisi'    => "Status",
-            'perbarui'              => "Perubahan pada status : ".$this->input->post('status', true).", Tgl FlwUp : ".$this->input->post('tgl_follow_up', true).", Solusi : ".$this->input->post('solusi', true)
+            'perbarui'              => "Perubahan pada status : " . $this->input->post('status', true) . ", Tgl FlwUp : " . $this->input->post('tgl_follow_up', true) . ", Solusi : " . $this->input->post('solusi', true)
         );
         $this->db->insert('riwayat', $dataRiwayat);
 
@@ -218,8 +218,8 @@ class Tugas extends CI_Controller
         $ukuran_file2   = $return2['file']['file_size'];
         $type_file2     = $return2['file']['file_type'];
 
-        if($return['file']['file_name'] && $return2['file']['file_name']){ //Jika file upload tersedia
-            if($return['result'] == "success" && $return2['result'] == "success"){ // Jika proses upload sukses
+        if ($return['file']['file_name'] && $return2['file']['file_name']) { //Jika file upload tersedia
+            if ($return['result'] == "success" && $return2['result'] == "success") { // Jika proses upload sukses
                 $result_save = array( // Simpan tugas
                     'status'                => $this->input->post('status', true),
                     'tgl_follow_up'         => $this->input->post('tgl_follow_up', true),
@@ -234,12 +234,12 @@ class Tugas extends CI_Controller
                     'ukuran_file_selesai2'  => $ukuran_file2,
                     'tipe_file_selesai2'    => $type_file2
                 );
-                $this->db->where('id', $this->input->post('id', true)); 
+                $this->db->where('id', $this->input->post('id', true));
                 $this->db->update('tbl_tugas', $result_save);
                 $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Tiket berhasil di update</b></center>');
-                redirect($this->agent->referrer()); 
+                redirect($this->agent->referrer());
             } else { // Jika proses upload gagal
-                $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$return['error'].'</b></center>');
+                $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $return['error'] . '</b></center>');
                 redirect($this->agent->referrer());
             }
         } else { //Jika file upload tidak tersedia
@@ -251,39 +251,42 @@ class Tugas extends CI_Controller
                 'tgl_close'             => $this->input->post('tgl_close', true),
                 'harga'                 => $this->input->post('harga', true)
             );
-            $this->db->where('id', $this->input->post('id', true)); 
+            $this->db->where('id', $this->input->post('id', true));
             $this->db->update('tbl_tugas', $result_save);
             $this->session->set_flashdata('message', '<center class="alert alert-warning" role="alert"><b>Tiket berhasil di simpan</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
         }
     }
 
     public function tiket()
     {
-        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array();
         $data['title'] = 'Halaman Utama';
         $this->load->view('template/header_Auth', $data);
         $this->load->view('auth/tiket');
         $this->load->view('template/footer_Auth');
     }
-    
-    public function index_limbahpadat(){
-        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+
+    public function index_limbahpadat()
+    {
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array();
         $data['title'] = 'Daftar Limbah Padat';
         $data['menu'] = 'class="active"';
         $this->load->view('template/header_barang', $data);
         $this->load->view('auth/barang');
     }
 
-    public function tambah_limbahpadat(){
-        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+    public function tambah_limbahpadat()
+    {
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array();
         $data['title'] = 'Tambah data Daftar Limbah Padat';
         $data['menu'] = 'class="active"';
         $this->load->view('template/header_barang', $data);
         $this->load->view('auth/tambah_limbahpadat');
     }
 
-    public function tambahDaftarLimbahPadat(){
+    public function tambahDaftarLimbahPadat()
+    {
         $nama_muatan            = $this->input->post('nama_muatan', true);
         $kategori               = $this->input->post('kategori', true);
         $satuan                 = $this->input->post('satuan', true);
@@ -315,25 +318,26 @@ class Tugas extends CI_Controller
                                                                     '$keterangan',
                                                                     '$createdatetime',
                                                                     '$ipaddress')");
-        if($result){
+        if ($result) {
             $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Data Limbah Padat berhasil dibuat.</b></center>');
-            redirect($this->agent->referrer()); 
-        }else{
-            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$result['error'].'</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
+        } else {
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $result['error'] . '</b></center>');
+            redirect($this->agent->referrer());
         }
-        
     }
 
-    public function edit_limbahpadat($id){
-        $data['id'] = $id; 
+    public function edit_limbahpadat($id)
+    {
+        $data['id'] = $id;
         $data['title'] = 'Edit data Daftar Limbah Padat';
         $data['menu'] = 'class="active"';
         $this->load->view('template/header_barang', $data);
         $this->load->view('auth/edit_limbahpadat');
     }
 
-    public function editDaftarLimbahPadat($id){
+    public function editDaftarLimbahPadat($id)
+    {
         $nama_muatan            = $this->input->post('nama_muatan', true);
         $kategori               = $this->input->post('kategori', true);
         $satuan                 = $this->input->post('satuan', true);
@@ -356,131 +360,138 @@ class Tugas extends CI_Controller
                                                                     lastupdatedatetime = '$lastupdatedatetime',
                                                                     ipaddress = '$ipaddress'
                                                                 WHERE id = '$id'");
-        if($result){
+        if ($result) {
             $this->session->set_flashdata('message', '<center class="alert alert-warning" role="alert"><b>Data Limbah Padat berhasil di ubah.</b></center>');
-            redirect($this->agent->referrer()); 
-        }else{
-            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$result['error'].'</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
+        } else {
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $result['error'] . '</b></center>');
+            redirect($this->agent->referrer());
         }
-        
     }
 
-    public function hapus_limbahpadat($id){
+    public function hapus_limbahpadat($id)
+    {
         $this->db->where('id', $id);
         $hapus = $this->db->delete('tbl_daftarlimbahpadat');
-        if($hapus){
+        if ($hapus) {
             $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>Data berhasil di hapus.</b></center>');
-            redirect($this->agent->referrer()); 
-        }else{
-            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$return['error'].'</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
+        } else {
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $return['error'] . '</b></center>');
+            redirect($this->agent->referrer());
         }
     }
 
-    public function transaksi_limbahpadat(){
-        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+    public function transaksi_limbahpadat()
+    {
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array();
         $data['title'] = 'Transaksi';
         $data['menuTransaksi'] = 'class="active"';
         $this->load->view('template/header_barang', $data);
         $this->load->view('auth/transaksi');
     }
 
-    public function tambah_transaksi(){
-        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+    public function tambah_transaksi()
+    {
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array();
         $data['title'] = 'Tambah data Transaksi';
         $data['menu'] = 'class="active"';
         $this->load->view('template/header_barang', $data);
         $this->load->view('auth/tambah_transaksi');
     }
-    
-    public function edit_transaksi($no_sj){
-        $data['no_sj'] = $no_sj; 
+
+    public function edit_transaksi($no_sj)
+    {
+        $data['no_sj'] = $no_sj;
         $data['title'] = 'Edit data Transaksi';
         $this->load->view('template/header_barang', $data);
         $this->load->view('auth/edit_transaksi');
     }
 
-    public function edittransaksi(){
+    public function edittransaksi()
+    {
         $result1    = $this->db->query("UPDATE tbl_transaksi SET tgl = '$tgl', 
                                                                 nama_hj = '$nama_hj'
                                                             WHERE 
                                                                 no_sj = '$no_sj'");
         $this->db->trans_start();
-            $id             = $this->input->post('id', true);
-            $no_sj          = $this->input->post('no_sj', true);
-            $tgl            = $this->input->post('tgl', true);
-            $nama_hj        = $this->input->post('nama_hj', true);
-            $nama_barang    = $this->input->post('nama_barang', true);
-            $qty            = $this->input->post('qty', true);
-            $value          = array();
-            $index          = 0;
-            foreach ($id as $key) {
-                array_push($value, array(
-                    'id'            => $key,
-                    'no_sj'         => $no_sj,
-                    'tgl'           => $tgl,
-                    'nama_hj'       => $nama_hj,
-                    'nama_barang'   => $nama_barang[$index],
-                    'qty'           => $qty[$index]
-                ));
-                $index++;
-            }
-            $result2 = $this->db->update_batch('tbl_transaksi', $value, 'id');
+        $id             = $this->input->post('id', true);
+        $no_sj          = $this->input->post('no_sj', true);
+        $tgl            = $this->input->post('tgl', true);
+        $nama_hj        = $this->input->post('nama_hj', true);
+        $nama_barang    = $this->input->post('nama_barang', true);
+        $qty            = $this->input->post('qty', true);
+        $value          = array();
+        $index          = 0;
+        foreach ($id as $key) {
+            array_push($value, array(
+                'id'            => $key,
+                'no_sj'         => $no_sj,
+                'tgl'           => $tgl,
+                'nama_hj'       => $nama_hj,
+                'nama_barang'   => $nama_barang[$index],
+                'qty'           => $qty[$index]
+            ));
+            $index++;
+        }
+        $result2 = $this->db->update_batch('tbl_transaksi', $value, 'id');
         $this->db->trans_complete();
 
-        if($result1 && $result2){
+        if ($result1 && $result2) {
             $this->session->set_flashdata('message', '<center class="alert alert-warning" role="alert"><b>Data Limbah Padat berhasil di ubah.</b></center>');
-            redirect($this->agent->referrer()); 
-        }else{
-            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$result1['error'].'</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
+        } else {
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $result1['error'] . '</b></center>');
+            redirect($this->agent->referrer());
         }
     }
-    
-    public function hapus_transaksi($no_sj){
+
+    public function hapus_transaksi($no_sj)
+    {
         $this->db->where('no_sj', $no_sj);
         $hapus = $this->db->delete('tbl_transaksi');
-        if($hapus){
+        if ($hapus) {
             $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>Data berhasil di hapus.</b></center>');
-            redirect($this->agent->referrer()); 
-        }else{
-            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$hapus['error'].'</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
+        } else {
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $hapus['error'] . '</b></center>');
+            redirect($this->agent->referrer());
         }
     }
 
-    public function tambahtransaksi(){
+    public function tambahtransaksi()
+    {
         $this->db->trans_start();
-            $data_namabarang    = $this->input->post('nama_barang', true);
-            $data_qty           = $this->input->post('qty', true);
-            $value              = array();
-            $index              = 0; 
-            foreach ($data_namabarang as $key) {
-                array_push($value, array(
-                    'no_sj'         => $this->input->post('no_sj', true),
-                    'tgl'           => $this->input->post('tgl', true),
-                    'nama_hj'       => $this->input->post('nama_hj', true),
-                    'nama_barang'   => $key,
-                    'qty'           => $data_qty[$index],
-                    'status'        => '1'
-                ));
-                $index++;
-            }
-            $result = $this->db->insert_batch('tbl_transaksi', $value);
+        $data_namabarang    = $this->input->post('nama_barang', true);
+        $data_qty           = $this->input->post('qty', true);
+        $value              = array();
+        $index              = 0;
+        foreach ($data_namabarang as $key) {
+            array_push($value, array(
+                'no_sj'         => $this->input->post('no_sj', true),
+                'tgl'           => $this->input->post('tgl', true),
+                'nama_hj'       => $this->input->post('nama_hj', true),
+                'nama_barang'   => $key,
+                'qty'           => $data_qty[$index],
+                'status'        => '1'
+            ));
+            $index++;
+        }
+        $result = $this->db->insert_batch('tbl_transaksi', $value);
         $this->db->trans_complete();
 
-        if($result){
+        if ($result) {
             $this->session->set_flashdata('message', '<center class="alert alert-success" role="alert"><b>Transaksi Berhasil.</b></center>');
-            redirect($this->agent->referrer()); 
-        }else{
-            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>'.$result['error'].'</b></center>');
-            redirect($this->agent->referrer()); 
+            redirect($this->agent->referrer());
+        } else {
+            $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>' . $result['error'] . '</b></center>');
+            redirect($this->agent->referrer());
         }
     }
 
-    public function print_transaksi($no_sj){
-        $data['no_sj'] = $no_sj; 
+    public function print_transaksi($no_sj)
+    {
+        $data['no_sj'] = $no_sj;
         $data['title'] = 'Print Surat Pengantar';
         // $this->load->view('template/header_barang');
         $this->load->view('auth/print_transaksi', $data);
@@ -488,7 +499,7 @@ class Tugas extends CI_Controller
 
     public function cektiket()
     {
-        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array(); 
+        $data['user'] = $this->db->get_where('user', array('name' => $this->session->userdata('name')))->row_array();
         $data['nomortiket'] = $this->input->post('nomortiket', true);
 
         $data['title'] = 'Cek tiket anda disini';
@@ -508,7 +519,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_nomesin()
     {
         $pk         = $this->input->post('pk', true);
@@ -520,7 +531,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_jenis()
     {
         $pk         = $this->input->post('pk', true);
@@ -532,7 +543,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_merk()
     {
         $pk         = $this->input->post('pk', true);
@@ -544,7 +555,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_capacity()
     {
         $pk         = $this->input->post('pk', true);
@@ -556,7 +567,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_freon()
     {
         $pk     = $this->input->post('pk', true);
@@ -568,7 +579,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_lokasi()
     {
         $pk      = $this->input->post('pk', true);
@@ -580,7 +591,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_kategori()
     {
         $pk         = $this->input->post('pk', true);
@@ -592,7 +603,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_pemasangan()
     {
         $pk         = $this->input->post('pk', true);
@@ -604,7 +615,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_status()
     {
         $pk         = $this->input->post('pk', true);
@@ -616,7 +627,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_note()
     {
         $pk         = $this->input->post('pk', true);
@@ -628,7 +639,7 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
-    
+
     public function updatemesin_keterangan()
     {
         $pk         = $this->input->post('pk', true);
@@ -640,4 +651,115 @@ class Tugas extends CI_Controller
             echo "Tidak ada data ditemukan.";
         }
     }
+
+    public function submitForm()
+    {
+        // Tangani form submission
+
+        if ($this->input->server('REQUEST_METHOD') === 'POST') {
+            // lakukan upload file
+            $config['upload_path']          = './file/';
+            $config['allowed_types']        = 'jpg|jpeg|png';
+            $config['max_size']             = '8100'; // 8 MB
+            $config['remove_space'] = TRUE;
+
+            $this->load->library('upload', $config); // Load konfigurasi uploadnya
+            $this->upload->do_upload('lampiran1');
+            $return = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
+            $nama_lampiran1 = $return['file']['file_name'];
+            $ukuran_file1   = $return['file']['file_size'];
+            $type_file1     = $return['file']['file_type'];
+
+            $this->load->library('upload', $config); // Load konfigurasi uploadnya
+            $this->upload->do_upload('lampiran2');
+            $return2 = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
+            $nama_lampiran2 = $return2['file']['file_name'];
+            $ukuran_file2   = $return2['file']['file_size'];
+            $type_file2     = $return2['file']['file_type'];
+
+            // Ambil data dari form
+            $data = array(
+                'tanggal' => date('Y-m-d H:i:s'),
+                'jenislimbah' => $this->input->post('jenislimbah'),
+                'dept_pelapor' => $this->input->post('dept_pelapor'),
+                'nama_pelapor' => $this->input->post('nama_pelapor'),
+                'timbangan_awal' => $this->input->post('timbangan_awal'),
+                'timbangan_akhir' => $this->input->post('timbangan_akhir'),
+                'quantity_mutasi' => $this->input->post('quantity_mutasi'),
+                'email' => $this->input->post('email'),
+                'lokasi' => $this->input->post('lokasi'),
+                'platnomer' => $this->input->post('platnomer'),
+                'permasalahan' => $this->input->post('permasalahan'),
+                'lampiran1' => $nama_lampiran1,
+                'lampiran2' => $nama_lampiran2,
+                'created_at' => date('Y-m-d H:i:s'),
+                'satuan' => 'Kg',
+                'ipaddress' => $_SERVER['REMOTE_ADDR'],
+                'lastupdatedatetime' => date('Y-m-d H:i:s'),
+                'pic' => $this->input->post('pic') ?? '',
+                'harga' => $this->input->post('harga') ?? '',
+                'perbarui_disposisi' => $this->input->post('perbarui_disposisi') ?? '',
+                'perbarui' => $this->input->post('perbarui') ?? '',
+                'solusi' => $this->input->post('solusi') ?? '',
+                'ukuran_file1' => $ukuran_file1,
+                'tipe_file1' => $type_file1,
+                'ukuran_file2' => $ukuran_file2,
+                'tipe_file2' => $type_file2,
+                'lampiran_selesai1' => $this->input->post('lampiran_selesai1') ?? '',
+                'ukuran_file_selesai1' => $this->input->post('ukuran_file_selesai1') ?? '',
+                'tipe_file_selesai1' => $this->input->post('tipe_file_selesai1') ?? '',
+                'lampiran_selesai2' => $this->input->post('lampiran_selesai2') ?? '',
+                'ukuran_file_selesai2' => $this->input->post('ukuran_file_selesai2') ?? '',
+                'tipe_file_selesai2' => $this->input->post('tipe_file_selesai2') ?? ''
+            );
+
+            // Panggil model untuk menyimpan data
+            $result = $this->InputLimbah_model->simpanDataLimbah($data);
+
+            if ($result) {
+                $this->session->set_flashdata('message', 'Data berhasil ditambahkan.');
+                redirect('auth/inputlimbah');
+            } else {
+                $this->session->set_flashdata('message', 'Gagal menambahkan data. Silakan coba lagi.');
+                redirect('tugas/tiket');
+            }
+        } else {
+            redirect('inputlimbah');
+        }
+    }
+    public function ubah($id)
+    {
+        if ($this->input->server('REQUEST_METHOD') === 'POST') {
+            // Ambil data dari form
+            $data = array(
+                // 'tanggal' => $this->input->post('tanggal'),
+                'jenislimbah' => $this->input->post('jenislimbah'),
+                'dept_pelapor' => $this->input->post('dept_pelapor'),
+                'nama_pelapor' => $this->input->post('nama_pelapor'),
+                'email' => $this->input->post('email'),
+                'lokasi' => $this->input->post('lokasi', true),
+                'timbangan_awal' => $this->input->post('timbangan_awal', true),
+                'timbangan_akhir' => $this->input->post('timbangan_akhir', true),
+                'quantity_mutasi' => $this->input->post('quantity_mutasi', true),
+                'platnomer' => $this->input->post('platnomer', true),
+                'permasalahan' => $this->input->post('permasalahan', true),
+                'lastupdatedatetime' =>  date("Y-m-d H:i:s"),
+                'satuan' => "Kg",
+                'ipaddress' => $_SERVER['REMOTE_ADDR']
+                // Tambahkan data lainnya sesuai kebutuhan
+            );
+
+
+            // Panggil method model untuk mengubah data
+            $this->db->where('id', $id);
+            $this->db->update('input_limbah', $data);
+
+
+            // Redirect ke halaman atau tampilkan pesan sukses
+            redirect('tugas/tiket/' . $id);
+        } else {
+            // Jika bukan metode POST, redirect atau lakukan sesuatu
+            redirect('error_page');
+        }
+    } 
 }
