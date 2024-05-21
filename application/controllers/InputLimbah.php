@@ -11,6 +11,19 @@ class InputLimbah extends CI_Controller
         $this->load->model('InputLimbah_model'); // Load model InputLimbah_model
         $this->load->library('upload');
         $this->load->helper('url');
+        
+    }
+    public function inputlimbah()
+    {
+        // Tampilkan halaman input limbah
+        {
+            // Tampilkan halaman input limbah
+            $data['title'] = 'input limbah';
+            $this->load->view('template/header_Auth', $data); // Ganti 'input_limbah' dengan nama view yang sesuai
+            $this->load->view('inputlimbah'); // Ganti 'input_limbah' dengan nama view yang sesuai
+            $this->load->view('template/footer_Auth'); // Ganti 'input_limbah' dengan nama view yang sesuai
+
+        }
     }
 
     public function viewtiket($id)

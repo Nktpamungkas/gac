@@ -1,4 +1,5 @@
 <script src="<?= base_url(); ?>bower_components/jquery/dist/jquery.min.js"></script>
+
 <script>
     function uploadFile() {
         // membaca data file yg akan diupload, dari komponen 'fileku'
@@ -16,25 +17,34 @@
         ajax.send(formdata);
     }
 
-    function progressHandler(event){
+    function progressHandler(event) {
         // hitung prosentase
         var percent = (event.loaded / event.total) * 100;
         // menampilkan prosentase ke komponen id 'progressBar'
         document.getElementById("progressBar").value = Math.round(percent);
         // menampilkan prosentase ke komponen id 'status'
-        document.getElementById("status").innerHTML = Math.round(percent)+"% telah terupload";
+        document.getElementById("status").innerHTML = Math.round(percent) + "% telah terupload";
         // menampilkan file size yg tlh terupload dan totalnya ke komponen id 'total'
-        document.getElementById("total").innerHTML = "Telah terupload "+event.loaded+" bytes dari "+event.total;
+        document.getElementById("total").innerHTML = "Telah terupload " + event.loaded + " bytes dari " + event.total;
     }
 </script>
 <style>
-    .blinking{
-        animation:blinkingText 0.8s infinite;
+    .blinking {
+        animation: blinkingText 0.8s infinite;
     }
-    @keyframes blinkingText{
-        0%{     color: #00000;    }
-        100%{    color: transparent; }
-        100%{   color: #00000;    }
+
+    @keyframes blinkingText {
+        0% {
+            color: #00000;
+        }
+
+        100% {
+            color: transparent;
+        }
+
+        100% {
+            color: #00000;
+        }
     }
 </style>
 <!-- <div class="container"> -->
@@ -80,8 +90,10 @@
                                 <?php
                                 $return = $this->db->query("SELECT * FROM tbl_tugas WHERE (`status` = 'Open' OR `status` = 'Progress') ORDER BY tgl_mulai DESC")->result_array();
                                 ?>
-                                <?php foreach($return AS $data) : ?>
-                                    <tr <?php if($data['prioritas'] == 1){ echo "bgcolor='#FFE4B5'"; } ?> >
+                                <?php foreach ($return as $data) : ?>
+                                    <tr <?php if ($data['prioritas'] == 1) {
+                                            echo "bgcolor='#FFE4B5'";
+                                        } ?>>
                                         <td>
                                             <li class="dropdown" style="list-style-type:none;">
                                                 <a href="#" class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></a>
@@ -118,8 +130,12 @@
                                         <td>
                                             <?= $data['lokasi']; ?>
                                         </td>
-                                        <td <?php if($data['status'] == "Delay"){ echo "bgcolor='#FCAFAF'"; } ?> class="<?php if($data['status'] == "Progress") { echo "blinking"; } ?>" style="
-                                                    <?php if($data['status'] == 'Open'){
+                                        <td <?php if ($data['status'] == "Delay") {
+                                                echo "bgcolor='#FCAFAF'";
+                                            } ?> class="<?php if ($data['status'] == "Progress") {
+                                                            echo "blinking";
+                                                        } ?>" style="
+                                                    <?php if ($data['status'] == 'Open') {
                                                         echo 'font-weight: bold;';
                                                     } ?>">
                                             <?= $data['status']; ?>
@@ -149,8 +165,10 @@
                                 <?php
                                 $return = $this->db->query("SELECT * FROM tbl_tugas WHERE `status` = 'Delay' ORDER BY tgl_mulai DESC")->result_array();
                                 ?>
-                                <?php foreach($return AS $data) : ?>
-                                    <tr <?php if($data['prioritas'] == 1){ echo "bgcolor='#FFE4B5'"; } ?> >
+                                <?php foreach ($return as $data) : ?>
+                                    <tr <?php if ($data['prioritas'] == 1) {
+                                            echo "bgcolor='#FFE4B5'";
+                                        } ?>>
                                         <td>
                                             <li class="dropdown" style="list-style-type:none;">
                                                 <a href="#" class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></a>
@@ -178,8 +196,12 @@
                                         <td>
                                             <?= $data['lokasi']; ?>
                                         </td>
-                                        <td <?php if($data['status'] == "Delay"){ echo "bgcolor='#FCAFAF'"; } ?> class="<?php if($data['status'] == "Progress") { echo "blinking"; } ?>" style="
-                                                    <?php if($data['status'] == 'Open'){
+                                        <td <?php if ($data['status'] == "Delay") {
+                                                echo "bgcolor='#FCAFAF'";
+                                            } ?> class="<?php if ($data['status'] == "Progress") {
+                                                            echo "blinking";
+                                                        } ?>" style="
+                                                    <?php if ($data['status'] == 'Open') {
                                                         echo 'font-weight: bold;';
                                                     } ?>">
                                             <?= $data['status']; ?>
@@ -209,8 +231,10 @@
                                 <?php
                                 $return = $this->db->query("SELECT * FROM tbl_tugas WHERE `status` = 'Close' ORDER BY tgl_mulai DESC")->result_array();
                                 ?>
-                                <?php foreach($return AS $data) : ?>
-                                    <tr <?php if($data['prioritas'] == 1){ echo "bgcolor='#FFE4B5'"; } ?> >
+                                <?php foreach ($return as $data) : ?>
+                                    <tr <?php if ($data['prioritas'] == 1) {
+                                            echo "bgcolor='#FFE4B5'";
+                                        } ?>>
                                         <td>
                                             <li class="dropdown" style="list-style-type:none;">
                                                 <a href="#" class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></a>
@@ -238,8 +262,12 @@
                                         <td>
                                             <?= $data['lokasi']; ?>
                                         </td>
-                                        <td <?php if($data['status'] == "Delay"){ echo "bgcolor='#FCAFAF'"; } ?> class="<?php if($data['status'] == "Progress") { echo "blinking"; } ?>" style="
-                                                    <?php if($data['status'] == 'Open'){
+                                        <td <?php if ($data['status'] == "Delay") {
+                                                echo "bgcolor='#FCAFAF'";
+                                            } ?> class="<?php if ($data['status'] == "Progress") {
+                                                            echo "blinking";
+                                                        } ?>" style="
+                                                    <?php if ($data['status'] == 'Open') {
                                                         echo 'font-weight: bold;';
                                                     } ?>">
                                             <?= $data['status']; ?>
@@ -250,6 +278,7 @@
                         </table>
                     </section>
                 </div>
+
                 <div class="tab-pane" id="master">
                     <br><br>
                     <section class="content">
@@ -370,7 +399,7 @@
                         <?php
                         $return = $this->db->query("SELECT * FROM mesin")->result_array();
                         ?>
-                                <?php foreach($return AS $data) : ?>
+                        <?php foreach ($return as $data) : ?>
                             <tr>
                                 <td>
                                     <li class="dropdown" style="list-style-type:none;">
@@ -402,11 +431,12 @@
             </div>
             <div class="tab-pane" id="limbah">
                 <br><br>
-                <button type="button" class="btn bg-red" title="Tambah data master" data-toggle="collapse" onclick="window.location.href='<?= base_url('auth/inputlimbah'); ?>'">
-                    <b>Tambah Data Baru</b>
-                </button>
                 <section class="content">
-                    <table id="example1" class="table table-bordered ">
+                    <button type="button" class="btn bg-red" title="Tambah data master" data-toggle="collapse" data-target="#tambah-data" onclick="window.location.href='<?= base_url('InputLimbah/inputlimbah'); ?>'">
+                        <b>Tambah Data Baru</b>
+                    </button>
+                    <br><br>
+                    <table id="example5" class="table table-bordered ">
                         <thead>
                             <tr>
                                 <th width="10"><i class="fa fa-gear"></i></th>
@@ -478,6 +508,7 @@
         </div>
     </div>
 </div>
+
 <div class="box-footer">
     <div class="pull-left">
         <a href="<?= base_url(); ?>Auth" class="btn btn-link btn-flat" style="font-size: 12px;">Kembali ke login</a>

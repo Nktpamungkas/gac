@@ -25,10 +25,10 @@
                         </div>
                         <div class="form-group col-sm-12" id="select_box">
                             <select class="form-control" style="width: 100%;" name="jenislimbah" id="jenislimbah" required>
-                                <?php $return = $this->db->query('SELECT * FROM tbl_daftarlimbahpadat')->result_array(); ?>
+                                <?php $return = $this->db->query('SELECT * FROM jenislimbah')->result_array(); ?>
                                 <option value="" disabled selected>JENIS LIMBAH:</option>
                                 <?php foreach ($return as $data) : ?>
-                                    <option value="<?= $data['nama_muatan']; ?>"><?= $data['nama_muatan']; ?></option>
+                                    <option value="<?= $data['jenis_limbah']; ?>"><?= $data['jenis_limbah']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -46,26 +46,26 @@
                         </div>
 
                         <div class="form-group col-sm-2">
-                            <input type="text" class="form-control input-sm" name="timbangan_awal" placeholder="TIMBANG AWAL:" required>
+                            <input type="text" class="form-control input-sm" name="timbangan_awal" placeholder="TIMBANG AWAL:">
                         </div>
                         <div class="form-group col-sm-2">
-                            <input type="text" class="form-control input-sm" name="timbangan_akhir" placeholder="TIMBANG AKHIR:" required>
+                            <input type="text" class="form-control input-sm" name="timbangan_akhir" placeholder="TIMBANG AKHIR:">
                         </div>
                         <div class="form-group col-sm-2">
-                            <input type="text" class="form-control input-sm" name="quantity_mutasi" placeholder="QUANTITY MUTASI:" required>
+                            <input type="text" class="form-control input-sm" name="quantity_mutasi" placeholder="QUANTITY MUTASI:">
                         </div>
                         <div class="form-group col-sm-6">
                             <input type="text" class="form-control input-sm" name="email" placeholder="Email pelapor:">
                         </div>
                         <div class="form-group col-sm-2">
-                            <input type="text" class="form-control input-sm" name="lokasi" placeholder="Lokasi:" required>
+                            <input type="text" class="form-control input-sm" name="lokasi" placeholder="Lokasi:">
                         </div>
                         <div class="form-group col-sm-2">
-                            <input type="text" class="form-control input-sm" name="platnomer" placeholder="Platnomer:" required>
+                            <input type="text" class="form-control input-sm" name="platnomer" placeholder="Platnomer:">
                         </div>
 
                         <div class="form-group col-sm-12">
-                            <textarea id="editor1" name="permasalahan" rows="5" style="width: 100%;" placeholder="Permasalahan:" required></textarea>
+                            <textarea id="editor1" name="permasalahan" rows="5" style="width: 100%;" placeholder="catatan:"></textarea>
                         </div>
 
                         <div class="form-group">
@@ -88,7 +88,7 @@
                     <div class="box-footer">
                         <div class="pull-left">
                             <button type="submit" name="submit" class="btn bg-green btn-flat" style="font-size: 12px;">TAMBAHKAN TIKET</button>
-                            <a href="<?= base_url(); ?>tugas/tiket" class="btn btn-link btn-flat" style="font-size: 12px;">Kembali</a>
+                            <a href="<?= base_url(); ?>Auth" class="btn btn-link btn-flat" style="font-size: 12px;">Kembali</a>
                         </div>
                     </div>
                 </form>

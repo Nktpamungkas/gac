@@ -178,16 +178,4 @@ class Auth extends CI_Controller
         $this->session->set_flashdata('message', '<center class="alert alert-danger" role="alert"><b>File berhasil di hapus.</b></center>');
         redirect($this->agent->referrer());
     }
-    public function inputlimbah()
-    {
-        // Tampilkan halaman input limbah
-        {
-            // Tampilkan halaman input limbah
-            $data['title'] = 'input limbah';
-            $this->load->view('template/header_Auth', $data); // Ganti 'input_limbah' dengan nama view yang sesuai
-            $this->load->view('inputlimbah'); // Ganti 'input_limbah' dengan nama view yang sesuai
-            $this->load->view('template/footer_Auth'); // Ganti 'input_limbah' dengan nama view yang sesuai
-
-        }
-    }
 }

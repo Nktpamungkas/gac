@@ -168,7 +168,7 @@
                                         <td><input type="text" class="form-control input-sm" name="platnomer" value="<?= $tugas->platnomer; ?>" placeholder="platnomer" required></td>
                                     </tr>
                                     <tr>
-                                        <td><b>Permasalahan</b></td>
+                                        <td><b>Catatan</b></td>
                                         <td>
                                             <textarea name="permasalahan" rows="3" style="width: 100%;" required><?= $tugas->permasalahan; ?></textarea>
 
