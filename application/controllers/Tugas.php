@@ -721,7 +721,7 @@ class Tugas extends CI_Controller
                 redirect('InputLimbah/inputlimbah');
             } else {
                 $this->session->set_flashdata('message', 'Gagal menambahkan data. Silakan coba lagi.');
-                redirect('tugas/tiket');
+                redirect('InputLimbah/inputlimbah');
             }
         } else {
             redirect('inputlimbah');
