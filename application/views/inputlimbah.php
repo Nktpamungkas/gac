@@ -13,7 +13,7 @@
                         <h3 class="box-title">Input Data Limbah</h3>
                     </div>
                     <div class="box-body">
-                        <?php if ($_SERVER['REMOTE_ADDR'] == '10.0.5.132' or $_SERVER['REMOTE_ADDR'] == '10.0.5.168') : ?>
+                        <?php if ($_SERVER['REMOTE_ADDR'] == '10.0.5.132' or $_SERVER['REMOTE_ADDR'] == '10.0.5.168'): ?>
                             <div class="form-group col-sm-12">
                                 <input type="datetime-local" class="form-control input-sm" name="tgl_openticket">
                             </div>
@@ -23,36 +23,55 @@
                             <label for="tanggal">Tanggal:</label>
                             <input type="date" class="form-control input-sm" name="tanggal" id="tanggal" required>
                         </div>
-                        <div class="form-group col-sm-12" id="select_box">
-                            <select class="form-control" style="width: 100%;" name="jenislimbah" id="jenislimbah" required>
+                        <div class="form-group col-sm-6" id="select_box">
+                            <select class="form-control" style="width: 100%;" name="jenislimbah" id="jenislimbah"
+                                required>
                                 <?php $return = $this->db->query('SELECT * FROM jenislimbah')->result_array(); ?>
                                 <option value="" disabled selected>JENIS LIMBAH:</option>
-                                <?php foreach ($return as $data) : ?>
+                                <?php foreach ($return as $data): ?>
                                     <option value="<?= $data['jenis_limbah']; ?>"><?= $data['jenis_limbah']; ?></option>
                                 <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-6" id="select_box">
+                            <select class="form-control" style="width: 100%;" name="satuan" id="satuan" required>
+                                <option value="" disabled selected>Satuan:</option>
+                                <?php
+                                // Array contoh satuan
+                                $jenislimbah = array("KANTONG PLASTIK", "KILOGRAM", "PCS", "BOTOL", "DRUM");
+
+                                // Loop untuk menampilkan pilihan dalam dropdown
+                                foreach ($jenislimbah as $satuan) {
+                                    echo '<option value="' . $satuan . '">' . $satuan . '</option>';
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="form-group col-sm-12">
                             <select class="form-control select2" style="width: 100%;" name="dept_pelapor" required>
                                 <?php $return = $this->db->query('SELECT * FROM dept')->result_array(); ?>
                                 <option value="" disabled selected>Departemen Pelapor:</option>
-                                <?php foreach ($return as $data) : ?>
+                                <?php foreach ($return as $data): ?>
                                     <option value="<?= $data['code']; ?>"><?= $data['dept_name']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group col-sm-6">
-                            <input type="text" class="form-control input-sm" name="nama_pelapor" placeholder="Nama pelapor:" required>
+                            <input type="text" class="form-control input-sm" name="nama_pelapor"
+                                placeholder="Nama pelapor:" required>
                         </div>
 
                         <div class="form-group col-sm-2">
-                            <input type="text" class="form-control input-sm" name="timbangan_awal" placeholder="TIMBANG AWAL:">
+                            <input type="text" class="form-control input-sm" name="timbangan_awal"
+                                placeholder="TIMBANG AWAL:">
                         </div>
                         <div class="form-group col-sm-2">
-                            <input type="text" class="form-control input-sm" name="timbangan_akhir" placeholder="TIMBANG AKHIR:">
+                            <input type="text" class="form-control input-sm" name="timbangan_akhir"
+                                placeholder="TIMBANG AKHIR:">
                         </div>
                         <div class="form-group col-sm-2">
-                            <input type="text" class="form-control input-sm" name="quantity_mutasi" placeholder="QUANTITY MUTASI:">
+                            <input type="text" class="form-control input-sm" name="quantity_mutasi"
+                                placeholder="QUANTITY MUTASI:">
                         </div>
                         <div class="form-group col-sm-6">
                             <input type="text" class="form-control input-sm" name="email" placeholder="Email pelapor:">
@@ -65,7 +84,8 @@
                         </div>
 
                         <div class="form-group col-sm-12">
-                            <textarea id="editor1" name="permasalahan" rows="5" style="width: 100%;" placeholder="catatan:"></textarea>
+                            <textarea id="editor1" name="permasalahan" rows="5" style="width: 100%;"
+                                placeholder="catatan:"></textarea>
                         </div>
 
                         <div class="form-group">
@@ -87,8 +107,10 @@
 
                     <div class="box-footer">
                         <div class="pull-left">
-                            <button type="submit" name="submit" class="btn bg-green btn-flat" style="font-size: 12px;">TAMBAHKAN TIKET</button>
-                            <a href="<?= base_url(); ?>Auth" class="btn btn-link btn-flat" style="font-size: 12px;">Kembali</a>
+                            <button type="submit" name="submit" class="btn bg-green btn-flat"
+                                style="font-size: 12px;">TAMBAHKAN TIKET</button>
+                            <a href="<?= base_url(); ?>Auth" class="btn btn-link btn-flat"
+                                style="font-size: 12px;">Kembali</a>
                         </div>
                     </div>
                 </form>

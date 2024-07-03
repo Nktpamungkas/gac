@@ -14,18 +14,18 @@ class Tugas extends CI_Controller
     public function tambahMaster()
     {
         $result_save = array( // Simpan tugas
-            "dept"              => $this->input->post('dept', true),
-            "no_mesin"          => $this->input->post('no_mesin', true),
-            "jenis"             => $this->input->post('jenis', true),
-            "merk"              => $this->input->post('merk', true),
-            "capacity"          => $this->input->post('capacity', true),
-            "freon"             => $this->input->post('freon', true),
-            "lokasi"            => $this->input->post('lokasi', true),
-            "status"            => $this->input->post('status', true),
-            "kategori"          => $this->input->post('kategori', true),
-            "pemasangan"        => $this->input->post('pemasangan', true),
-            "note"              => $this->input->post('note', true),
-            "keterangan"        => $this->input->post('keterangan', true)
+            "dept" => $this->input->post('dept', true),
+            "no_mesin" => $this->input->post('no_mesin', true),
+            "jenis" => $this->input->post('jenis', true),
+            "merk" => $this->input->post('merk', true),
+            "capacity" => $this->input->post('capacity', true),
+            "freon" => $this->input->post('freon', true),
+            "lokasi" => $this->input->post('lokasi', true),
+            "status" => $this->input->post('status', true),
+            "kategori" => $this->input->post('kategori', true),
+            "pemasangan" => $this->input->post('pemasangan', true),
+            "note" => $this->input->post('note', true),
+            "keterangan" => $this->input->post('keterangan', true)
         );
         $save = $this->db->insert('mesin', $result_save);
 
@@ -54,27 +54,27 @@ class Tugas extends CI_Controller
     public function addNew()
     {
         // lakukan upload file
-        $config['upload_path']          = './file/';
-        $config['allowed_types']        = 'jpg|jpeg';
-        $config['max_size']             = '8100'; // 8 MB
+        $config['upload_path'] = './file/';
+        $config['allowed_types'] = 'jpg|jpeg';
+        $config['max_size'] = '8100'; // 8 MB
         $config['remove_space'] = TRUE;
 
         $this->load->library('upload', $config); // Load konfigurasi uploadnya
         $this->upload->do_upload('lampiran1');
         $return = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
         $nama_lampiran1 = $return['file']['file_name'];
-        $ukuran_file1   = $return['file']['file_size'];
-        $type_file1     = $return['file']['file_type'];
+        $ukuran_file1 = $return['file']['file_size'];
+        $type_file1 = $return['file']['file_type'];
 
         $this->load->library('upload', $config); // Load konfigurasi uploadnya
         $this->upload->do_upload('lampiran2');
         $return2 = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
         $nama_lampiran2 = $return2['file']['file_name'];
-        $ukuran_file2   = $return2['file']['file_size'];
-        $type_file2     = $return2['file']['file_type'];
+        $ukuran_file2 = $return2['file']['file_size'];
+        $type_file2 = $return2['file']['file_type'];
 
         // Get name computer untuk menampilkan tiket berdasarkan nama departemen dikomputernya
-        $get_nameComp   = substr(gethostbyaddr($_SERVER['REMOTE_ADDR']), 2, 3);
+        $get_nameComp = substr(gethostbyaddr($_SERVER['REMOTE_ADDR']), 2, 3);
 
         // if($return['file']['file_name'] && $return2['file']['file_name']){ //Jika file upload tersedia
         if ($return['result'] == "success" && $return2['result'] == "success") { // Jika proses upload sukses
@@ -95,38 +95,38 @@ class Tugas extends CI_Controller
                 $tgl_openticket = date('Y-m-d H:i:s');
             }
             $result_save = array( // Simpan tugas
-                'prioritas'         => $prioritas,
-                'tgl_mulai'         => $tgl_openticket,
-                'kategori'          => $this->input->post('kategori', true),
-                'dept'              => $this->input->post('dept', true),
-                'nama_pelapor'      => $this->input->post('nama_pelapor', true),
-                'dept_pelapor'      => $this->input->post('dept_pelapor', true),
-                'email'             => $this->input->post('email', true),
-                'id_mesin'          => $id_mesin,
-                'lokasi'            => $this->input->post('lokasi', true),
-                'permasalahan'      => $this->input->post('permasalahan', true),
-                'lampiran1'         => $nama_lampiran1,
-                'ukuran_file1'      => $ukuran_file1,
-                'tipe_file1'        => $type_file1,
-                'lampiran2'         => $nama_lampiran2,
-                'ukuran_file2'      => $ukuran_file2,
-                'tipe_file2'        => $type_file2,
-                'status'            => "Open"
+                'prioritas' => $prioritas,
+                'tgl_mulai' => $tgl_openticket,
+                'kategori' => $this->input->post('kategori', true),
+                'dept' => $this->input->post('dept', true),
+                'nama_pelapor' => $this->input->post('nama_pelapor', true),
+                'dept_pelapor' => $this->input->post('dept_pelapor', true),
+                'email' => $this->input->post('email', true),
+                'id_mesin' => $id_mesin,
+                'lokasi' => $this->input->post('lokasi', true),
+                'permasalahan' => $this->input->post('permasalahan', true),
+                'lampiran1' => $nama_lampiran1,
+                'ukuran_file1' => $ukuran_file1,
+                'tipe_file1' => $type_file1,
+                'lampiran2' => $nama_lampiran2,
+                'ukuran_file2' => $ukuran_file2,
+                'tipe_file2' => $type_file2,
+                'status' => "Open"
             );
-            $q_cekIdMesin   = $this->db->query("SELECT * FROM mesin WHERE id = '$id_mesin'")->row();
-            $q_cek_tiket    = $this->db->query("SELECT count(*) AS tiket FROM tbl_tugas WHERE (`status` = 'Open' OR `status` = 'Progress') AND id_mesin = '$q_cekIdMesin->id'")->row();
+            $q_cekIdMesin = $this->db->query("SELECT * FROM mesin WHERE id = '$id_mesin'")->row();
+            $q_cek_tiket = $this->db->query("SELECT count(*) AS tiket FROM tbl_tugas WHERE (`status` = 'Open' OR `status` = 'Progress') AND id_mesin = '$q_cekIdMesin->id'")->row();
 
             if ($q_cek_tiket->tiket == 0) {
                 $save = $this->db->insert('tbl_tugas', $result_save);
-                $last_id =  $this->db->insert_id();
+                $last_id = $this->db->insert_id();
 
                 if ($save) {
                     // RIWAYAT TUGAS BARU
-                    $dataRiwayat    = array(
-                        'id_tugas'              => $last_id,
-                        'tanggal'               => mdate('%Y-%m-%d %H:%i:%s %A'),
-                        'dibuat_oleh'           => $this->input->post('dept', true),
-                        'perbarui_disposisi'    => "Tugas Dibuat oleh " . $this->input->post('nama_pelapor', true)
+                    $dataRiwayat = array(
+                        'id_tugas' => $last_id,
+                        'tanggal' => mdate('%Y-%m-%d %H:%i:%s %A'),
+                        'dibuat_oleh' => $this->input->post('dept', true),
+                        'perbarui_disposisi' => "Tugas Dibuat oleh " . $this->input->post('nama_pelapor', true)
                     );
                     $this->db->insert('riwayat', $dataRiwayat);
 
@@ -165,11 +165,11 @@ class Tugas extends CI_Controller
             $prioritas = 0;
         }
         $result_save = array( // Simpan tugas
-            'prioritas'         => $prioritas,
-            'nama_pelapor'      => $this->input->post('nama_pelapor', true),
-            'email'             => $this->input->post('email', true),
-            'lokasi'            => $this->input->post('lokasi', true),
-            'permasalahan'      => $this->input->post('permasalahan', true),
+            'prioritas' => $prioritas,
+            'nama_pelapor' => $this->input->post('nama_pelapor', true),
+            'email' => $this->input->post('email', true),
+            'lokasi' => $this->input->post('lokasi', true),
+            'permasalahan' => $this->input->post('permasalahan', true),
         );
 
         $this->db->where('id', $this->input->post('id', true));
@@ -186,53 +186,53 @@ class Tugas extends CI_Controller
     public function edittiket()
     {
         // Get name computer untuk menampilkan tiket berdasarkan nama departemen dikomputernya
-        $get_nameComp   = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+        $get_nameComp = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
         // RIWAYAT TUGAS BARU
-        $dataRiwayat    = array(
-            'id_tugas'              => $this->input->post('id', true),
-            'tanggal'               => mdate('%Y-%m-%d %H:%i:%s %A'),
-            'dibuat_oleh'           => $get_nameComp,
-            'perbarui_disposisi'    => "Status",
-            'perbarui'              => "Perubahan pada status : " . $this->input->post('status', true) . ", Tgl FlwUp : " . $this->input->post('tgl_follow_up', true) . ", Solusi : " . $this->input->post('solusi', true)
+        $dataRiwayat = array(
+            'id_tugas' => $this->input->post('id', true),
+            'tanggal' => mdate('%Y-%m-%d %H:%i:%s %A'),
+            'dibuat_oleh' => $get_nameComp,
+            'perbarui_disposisi' => "Status",
+            'perbarui' => "Perubahan pada status : " . $this->input->post('status', true) . ", Tgl FlwUp : " . $this->input->post('tgl_follow_up', true) . ", Solusi : " . $this->input->post('solusi', true)
         );
         $this->db->insert('riwayat', $dataRiwayat);
 
         // lakukan upload file
-        $config['upload_path']          = './file/';
-        $config['allowed_types']        = 'jpg|jpeg';
-        $config['max_size']             = '8100'; // 8 MB
+        $config['upload_path'] = './file/';
+        $config['allowed_types'] = 'jpg|jpeg';
+        $config['max_size'] = '8100'; // 8 MB
         $config['remove_space'] = TRUE;
 
         $this->load->library('upload', $config); // Load konfigurasi uploadnya
         $this->upload->do_upload('lampiran1');
         $return = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
         $nama_lampiran1 = $return['file']['file_name'];
-        $ukuran_file1   = $return['file']['file_size'];
-        $type_file1     = $return['file']['file_type'];
+        $ukuran_file1 = $return['file']['file_size'];
+        $type_file1 = $return['file']['file_type'];
 
         $this->load->library('upload', $config); // Load konfigurasi uploadnya
         $this->upload->do_upload('lampiran2');
         $return2 = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
         $nama_lampiran2 = $return2['file']['file_name'];
-        $ukuran_file2   = $return2['file']['file_size'];
-        $type_file2     = $return2['file']['file_type'];
+        $ukuran_file2 = $return2['file']['file_size'];
+        $type_file2 = $return2['file']['file_type'];
 
         if ($return['file']['file_name'] && $return2['file']['file_name']) { //Jika file upload tersedia
             if ($return['result'] == "success" && $return2['result'] == "success") { // Jika proses upload sukses
                 $result_save = array( // Simpan tugas
-                    'status'                => $this->input->post('status', true),
-                    'tgl_follow_up'         => $this->input->post('tgl_follow_up', true),
-                    'pelaksana'             => $this->input->post('pelaksana', true),
-                    'solusi'                => $this->input->post('solusi', true),
-                    'tgl_close'             => $this->input->post('tgl_close', true),
-                    'harga'                 => $this->input->post('harga', true),
-                    'lampiran_selesai1'     => $nama_lampiran1,
-                    'ukuran_file_selesai1'  => $ukuran_file1,
-                    'tipe_file_selesai1'    => $type_file1,
-                    'lampiran_selesai2'     => $nama_lampiran2,
-                    'ukuran_file_selesai2'  => $ukuran_file2,
-                    'tipe_file_selesai2'    => $type_file2
+                    'status' => $this->input->post('status', true),
+                    'tgl_follow_up' => $this->input->post('tgl_follow_up', true),
+                    'pelaksana' => $this->input->post('pelaksana', true),
+                    'solusi' => $this->input->post('solusi', true),
+                    'tgl_close' => $this->input->post('tgl_close', true),
+                    'harga' => $this->input->post('harga', true),
+                    'lampiran_selesai1' => $nama_lampiran1,
+                    'ukuran_file_selesai1' => $ukuran_file1,
+                    'tipe_file_selesai1' => $type_file1,
+                    'lampiran_selesai2' => $nama_lampiran2,
+                    'ukuran_file_selesai2' => $ukuran_file2,
+                    'tipe_file_selesai2' => $type_file2
                 );
                 $this->db->where('id', $this->input->post('id', true));
                 $this->db->update('tbl_tugas', $result_save);
@@ -244,12 +244,12 @@ class Tugas extends CI_Controller
             }
         } else { //Jika file upload tidak tersedia
             $result_save = array( // Simpan tugas
-                'status'                => $this->input->post('status', true),
-                'tgl_follow_up'         => $this->input->post('tgl_follow_up', true),
-                'pelaksana'             => $this->input->post('pelaksana', true),
-                'solusi'                => $this->input->post('solusi', true),
-                'tgl_close'             => $this->input->post('tgl_close', true),
-                'harga'                 => $this->input->post('harga', true)
+                'status' => $this->input->post('status', true),
+                'tgl_follow_up' => $this->input->post('tgl_follow_up', true),
+                'pelaksana' => $this->input->post('pelaksana', true),
+                'solusi' => $this->input->post('solusi', true),
+                'tgl_close' => $this->input->post('tgl_close', true),
+                'harga' => $this->input->post('harga', true)
             );
             $this->db->where('id', $this->input->post('id', true));
             $this->db->update('tbl_tugas', $result_save);
@@ -287,16 +287,16 @@ class Tugas extends CI_Controller
 
     public function tambahDaftarLimbahPadat()
     {
-        $nama_muatan            = $this->input->post('nama_muatan', true);
-        $kategori               = $this->input->post('kategori', true);
-        $satuan                 = $this->input->post('satuan', true);
-        $satuan_timbang         = $this->input->post('satuan_timbang', true);
-        $kontraktor             = $this->input->post('kontraktor', true);
-        $pic                    = $this->input->post('pic', true);
-        $harga                  = $this->input->post('harga', true);
-        $keterangan             = $this->input->post('keterangan', true);
-        $createdatetime         = date('Y-m-d H:i:s');
-        $ipaddress              = $_SERVER['REMOTE_ADDR'];
+        $nama_muatan = $this->input->post('nama_muatan', true);
+        $kategori = $this->input->post('kategori', true);
+        $satuan = $this->input->post('satuan', true);
+        $satuan_timbang = $this->input->post('satuan_timbang', true);
+        $kontraktor = $this->input->post('kontraktor', true);
+        $pic = $this->input->post('pic', true);
+        $harga = $this->input->post('harga', true);
+        $keterangan = $this->input->post('keterangan', true);
+        $createdatetime = date('Y-m-d H:i:s');
+        $ipaddress = $_SERVER['REMOTE_ADDR'];
 
         $result = $this->db->query("INSERT INTO tbl_daftarlimbahpadat (nama_muatan,
                                                                         kategori,
@@ -338,16 +338,16 @@ class Tugas extends CI_Controller
 
     public function editDaftarLimbahPadat($id)
     {
-        $nama_muatan            = $this->input->post('nama_muatan', true);
-        $kategori               = $this->input->post('kategori', true);
-        $satuan                 = $this->input->post('satuan', true);
-        $satuan_timbang         = $this->input->post('satuan_timbang', true);
-        $kontraktor             = $this->input->post('kontraktor', true);
-        $pic                    = $this->input->post('pic', true);
-        $harga                  = $this->input->post('harga', true);
-        $keterangan             = $this->input->post('keterangan', true);
-        $lastupdatedatetime     = date('Y-m-d H:i:s');
-        $ipaddress              = $_SERVER['REMOTE_ADDR'];
+        $nama_muatan = $this->input->post('nama_muatan', true);
+        $kategori = $this->input->post('kategori', true);
+        $satuan = $this->input->post('satuan', true);
+        $satuan_timbang = $this->input->post('satuan_timbang', true);
+        $kontraktor = $this->input->post('kontraktor', true);
+        $pic = $this->input->post('pic', true);
+        $harga = $this->input->post('harga', true);
+        $keterangan = $this->input->post('keterangan', true);
+        $lastupdatedatetime = date('Y-m-d H:i:s');
+        $ipaddress = $_SERVER['REMOTE_ADDR'];
 
         $result = $this->db->query("UPDATE tbl_daftarlimbahpadat SET nama_muatan = '$nama_muatan',
                                                                     kategori = '$kategori',
@@ -410,28 +410,31 @@ class Tugas extends CI_Controller
 
     public function edittransaksi()
     {
-        $result1    = $this->db->query("UPDATE tbl_transaksi SET tgl = '$tgl', 
+        $result1 = $this->db->query("UPDATE tbl_transaksi SET tgl = '$tgl', 
                                                                 nama_hj = '$nama_hj'
                                                             WHERE 
                                                                 no_sj = '$no_sj'");
         $this->db->trans_start();
-        $id             = $this->input->post('id', true);
-        $no_sj          = $this->input->post('no_sj', true);
-        $tgl            = $this->input->post('tgl', true);
-        $nama_hj        = $this->input->post('nama_hj', true);
-        $nama_barang    = $this->input->post('nama_barang', true);
-        $qty            = $this->input->post('qty', true);
-        $value          = array();
-        $index          = 0;
+        $id = $this->input->post('id', true);
+        $no_sj = $this->input->post('no_sj', true);
+        $tgl = $this->input->post('tgl', true);
+        $nama_hj = $this->input->post('nama_hj', true);
+        $nama_barang = $this->input->post('nama_barang', true);
+        $qty = $this->input->post('qty', true);
+        $value = array();
+        $index = 0;
         foreach ($id as $key) {
-            array_push($value, array(
-                'id'            => $key,
-                'no_sj'         => $no_sj,
-                'tgl'           => $tgl,
-                'nama_hj'       => $nama_hj,
-                'nama_barang'   => $nama_barang[$index],
-                'qty'           => $qty[$index]
-            ));
+            array_push(
+                $value,
+                array(
+                    'id' => $key,
+                    'no_sj' => $no_sj,
+                    'tgl' => $tgl,
+                    'nama_hj' => $nama_hj,
+                    'nama_barang' => $nama_barang[$index],
+                    'qty' => $qty[$index]
+                )
+            );
             $index++;
         }
         $result2 = $this->db->update_batch('tbl_transaksi', $value, 'id');
@@ -462,19 +465,22 @@ class Tugas extends CI_Controller
     public function tambahtransaksi()
     {
         $this->db->trans_start();
-        $data_namabarang    = $this->input->post('nama_barang', true);
-        $data_qty           = $this->input->post('qty', true);
-        $value              = array();
-        $index              = 0;
+        $data_namabarang = $this->input->post('nama_barang', true);
+        $data_qty = $this->input->post('qty', true);
+        $value = array();
+        $index = 0;
         foreach ($data_namabarang as $key) {
-            array_push($value, array(
-                'no_sj'         => $this->input->post('no_sj', true),
-                'tgl'           => $this->input->post('tgl', true),
-                'nama_hj'       => $this->input->post('nama_hj', true),
-                'nama_barang'   => $key,
-                'qty'           => $data_qty[$index],
-                'status'        => '1'
-            ));
+            array_push(
+                $value,
+                array(
+                    'no_sj' => $this->input->post('no_sj', true),
+                    'tgl' => $this->input->post('tgl', true),
+                    'nama_hj' => $this->input->post('nama_hj', true),
+                    'nama_barang' => $key,
+                    'qty' => $data_qty[$index],
+                    'status' => '1'
+                )
+            );
             $index++;
         }
         $result = $this->db->insert_batch('tbl_transaksi', $value);
@@ -510,8 +516,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_dept()
     {
-        $pk     = $this->input->post('pk', true);
-        $dept   = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $dept = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET dept = '$dept' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -522,8 +528,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_nomesin()
     {
-        $pk         = $this->input->post('pk', true);
-        $nomesin    = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $nomesin = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET no_mesin = '$nomesin' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -534,8 +540,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_jenis()
     {
-        $pk         = $this->input->post('pk', true);
-        $jenis      = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $jenis = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET jenis = '$jenis' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -546,8 +552,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_merk()
     {
-        $pk         = $this->input->post('pk', true);
-        $merk       = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $merk = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET merk = '$merk' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -558,8 +564,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_capacity()
     {
-        $pk         = $this->input->post('pk', true);
-        $capacity   = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $capacity = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET capacity = '$capacity' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -570,8 +576,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_freon()
     {
-        $pk     = $this->input->post('pk', true);
-        $freon  = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $freon = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET freon = '$freon' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -582,8 +588,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_lokasi()
     {
-        $pk      = $this->input->post('pk', true);
-        $lokasi  = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $lokasi = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET lokasi = '$lokasi' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -594,8 +600,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_kategori()
     {
-        $pk         = $this->input->post('pk', true);
-        $kategori   = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $kategori = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET kategori = '$kategori' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -606,7 +612,7 @@ class Tugas extends CI_Controller
 
     public function updatemesin_pemasangan()
     {
-        $pk         = $this->input->post('pk', true);
+        $pk = $this->input->post('pk', true);
         $pemasangan = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET pemasangan = '$pemasangan' where id = '$pk'");
         if ($result->num_rows > 0) {
@@ -618,8 +624,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_status()
     {
-        $pk         = $this->input->post('pk', true);
-        $status     = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $status = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET `status` = '$status' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -630,8 +636,8 @@ class Tugas extends CI_Controller
 
     public function updatemesin_note()
     {
-        $pk         = $this->input->post('pk', true);
-        $note       = $this->input->post('value', true);
+        $pk = $this->input->post('pk', true);
+        $note = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET note = '$note' where id = '$pk'");
         if ($result->num_rows > 0) {
             json_encode('success');
@@ -642,7 +648,7 @@ class Tugas extends CI_Controller
 
     public function updatemesin_keterangan()
     {
-        $pk         = $this->input->post('pk', true);
+        $pk = $this->input->post('pk', true);
         $keterangan = $this->input->post('value', true);
         $result = $this->db->query("UPDATE mesin SET keterangan = '$keterangan' where id = '$pk'");
         if ($result->num_rows > 0) {
@@ -658,24 +664,24 @@ class Tugas extends CI_Controller
 
         if ($this->input->server('REQUEST_METHOD') === 'POST') {
             // lakukan upload file
-            $config['upload_path']          = './file/';
-            $config['allowed_types']        = 'jpg|jpeg|png';
-            $config['max_size']             = '8100'; // 8 MB
+            $config['upload_path'] = './file/';
+            $config['allowed_types'] = 'jpg|jpeg|png';
+            $config['max_size'] = '8100'; // 8 MB
             $config['remove_space'] = TRUE;
 
             $this->load->library('upload', $config); // Load konfigurasi uploadnya
             $this->upload->do_upload('lampiran1');
             $return = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
             $nama_lampiran1 = $return['file']['file_name'];
-            $ukuran_file1   = $return['file']['file_size'];
-            $type_file1     = $return['file']['file_type'];
+            $ukuran_file1 = $return['file']['file_size'];
+            $type_file1 = $return['file']['file_type'];
 
             $this->load->library('upload', $config); // Load konfigurasi uploadnya
             $this->upload->do_upload('lampiran2');
             $return2 = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
             $nama_lampiran2 = $return2['file']['file_name'];
-            $ukuran_file2   = $return2['file']['file_size'];
-            $type_file2     = $return2['file']['file_type'];
+            $ukuran_file2 = $return2['file']['file_size'];
+            $type_file2 = $return2['file']['file_type'];
 
             // Ambil data dari form
             $data = array(
@@ -693,7 +699,7 @@ class Tugas extends CI_Controller
                 'lampiran1' => $nama_lampiran1,
                 'lampiran2' => $nama_lampiran2,
                 'created_at' => date('Y-m-d H:i:s'),
-                'satuan' => 'Kg',
+                'satuan' => $this->input->post('satuan'),
                 'ipaddress' => $_SERVER['REMOTE_ADDR'],
                 'lastupdatedatetime' => date('Y-m-d H:i:s'),
                 'pic' => $this->input->post('pic') ?? '',
@@ -743,8 +749,8 @@ class Tugas extends CI_Controller
                 'quantity_mutasi' => $this->input->post('quantity_mutasi', true),
                 'platnomer' => $this->input->post('platnomer', true),
                 'permasalahan' => $this->input->post('permasalahan', true),
-                'lastupdatedatetime' =>  date("Y-m-d H:i:s"),
-                'satuan' => "Kg",
+                'lastupdatedatetime' => date("Y-m-d H:i:s"),
+                'satuan' => $this->input->post('satuan', true),
                 'ipaddress' => $_SERVER['REMOTE_ADDR']
                 // Tambahkan data lainnya sesuai kebutuhan
             );
@@ -761,5 +767,5 @@ class Tugas extends CI_Controller
             // Jika bukan metode POST, redirect atau lakukan sesuatu
             redirect('error_page');
         }
-    } 
+    }
 }
