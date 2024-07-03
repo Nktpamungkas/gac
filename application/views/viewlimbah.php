@@ -192,7 +192,7 @@
 
                                 </td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <td><b>Foto</b><br></td>
                                 <td>
                                     <?php if ($data['lampiran_selesai1'] && $data->ukuran_file_selesai1 && $data->tipe_file_selesai1 && $data->lampiran_selesai2 && $data->ukuran_file_selesai2 && $data->tipe_file_selesai2): ?>
@@ -211,7 +211,7 @@
                                         <input type="file" name="lampiran2">
                                     <?php endif; ?>
                                 </td>
-                            </tr>
+                            </tr>-->
                             <tr>
                                 <td><b>Tanggal</b></td>
                                 <td><?= $tugas->tanggal; ?></td>
