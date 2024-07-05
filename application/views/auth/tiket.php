@@ -89,12 +89,12 @@ function progressHandler(event) {
 							</thead>
 							<tbody>
 								<?php
-                                $return = $this->db->query("SELECT * FROM tbl_tugas WHERE (`status` = 'Open' OR `status` = 'Progress') ORDER BY tgl_mulai DESC")->result_array();
-                                ?>
+								$return = $this->db->query("SELECT * FROM tbl_tugas WHERE (`status` = 'Open' OR `status` = 'Progress') ORDER BY tgl_mulai DESC")->result_array();
+								?>
 								<?php foreach ($return as $data): ?>
 								<tr <?php if ($data['prioritas'] == 1) {
-                                        echo "bgcolor='#FFE4B5'";
-                                    } ?>>
+										echo "bgcolor='#FFE4B5'";
+									} ?>>
 									<td>
 										<li class="dropdown" style="list-style-type:none;">
 											<a href="#" class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></a>
@@ -116,9 +116,9 @@ function progressHandler(event) {
 									</td>
 									<td>
 										<?php
-                                            $return_detailmesin = $this->db->query("SELECT * FROM mesin WHERE id = '$data[id_mesin]'")->row();
-                                            echo $return_detailmesin->no_mesin;
-                                            ?>
+											$return_detailmesin = $this->db->query("SELECT * FROM mesin WHERE id = '$data[id_mesin]'")->row();
+											echo $return_detailmesin->no_mesin;
+											?>
 									</td>
 									<td>
 										<?= $return_detailmesin->merk; ?>
@@ -136,13 +136,13 @@ function progressHandler(event) {
 										<?= $data['lokasi']; ?>
 									</td>
 									<td <?php if ($data['status'] == "Delay") {
-                                            echo "bgcolor='#FCAFAF'";
-                                        } ?> class="<?php if ($data['status'] == "Progress") {
-                                              echo "blinking";
-                                          } ?>" style="
-                                                    <?php if ($data['status'] == 'Open') {
-                                                        echo 'font-weight: bold;';
-                                                    } ?>">
+											echo "bgcolor='#FCAFAF'";
+										} ?> class="<?php if ($data['status'] == "Progress") {
+											  echo "blinking";
+										  } ?>" style="
+													<?php if ($data['status'] == 'Open') {
+														echo 'font-weight: bold;';
+													} ?>">
 										<?= $data['status']; ?>
 									</td>
 								</tr>
@@ -168,12 +168,12 @@ function progressHandler(event) {
 							</thead>
 							<tbody>
 								<?php
-                                $return = $this->db->query("SELECT * FROM tbl_tugas WHERE `status` = 'Delay' ORDER BY tgl_mulai DESC")->result_array();
-                                ?>
+								$return = $this->db->query("SELECT * FROM tbl_tugas WHERE `status` = 'Delay' ORDER BY tgl_mulai DESC")->result_array();
+								?>
 								<?php foreach ($return as $data): ?>
 								<tr <?php if ($data['prioritas'] == 1) {
-                                        echo "bgcolor='#FFE4B5'";
-                                    } ?>>
+										echo "bgcolor='#FFE4B5'";
+									} ?>>
 									<td>
 										<li class="dropdown" style="list-style-type:none;">
 											<a href="#" class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></a>
@@ -206,13 +206,13 @@ function progressHandler(event) {
 										<?= $data['lokasi']; ?>
 									</td>
 									<td <?php if ($data['status'] == "Delay") {
-                                            echo "bgcolor='#FCAFAF'";
-                                        } ?> class="<?php if ($data['status'] == "Progress") {
-                                              echo "blinking";
-                                          } ?>" style="
-                                                    <?php if ($data['status'] == 'Open') {
-                                                        echo 'font-weight: bold;';
-                                                    } ?>">
+											echo "bgcolor='#FCAFAF'";
+										} ?> class="<?php if ($data['status'] == "Progress") {
+											  echo "blinking";
+										  } ?>" style="
+													<?php if ($data['status'] == 'Open') {
+														echo 'font-weight: bold;';
+													} ?>">
 										<?= $data['status']; ?>
 									</td>
 								</tr>
@@ -238,12 +238,12 @@ function progressHandler(event) {
 							</thead>
 							<tbody>
 								<?php
-                                $return = $this->db->query("SELECT * FROM tbl_tugas WHERE `status` = 'Close' ORDER BY tgl_mulai DESC")->result_array();
-                                ?>
+								$return = $this->db->query("SELECT * FROM tbl_tugas WHERE `status` = 'Close' ORDER BY tgl_mulai DESC")->result_array();
+								?>
 								<?php foreach ($return as $data): ?>
 								<tr <?php if ($data['prioritas'] == 1) {
-                                        echo "bgcolor='#FFE4B5'";
-                                    } ?>>
+										echo "bgcolor='#FFE4B5'";
+									} ?>>
 									<td>
 										<li class="dropdown" style="list-style-type:none;">
 											<a href="#" class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></a>
@@ -276,13 +276,13 @@ function progressHandler(event) {
 										<?= $data['lokasi']; ?>
 									</td>
 									<td <?php if ($data['status'] == "Delay") {
-                                            echo "bgcolor='#FCAFAF'";
-                                        } ?> class="<?php if ($data['status'] == "Progress") {
-                                              echo "blinking";
-                                          } ?>" style="
-                                                    <?php if ($data['status'] == 'Open') {
-                                                        echo 'font-weight: bold;';
-                                                    } ?>">
+											echo "bgcolor='#FCAFAF'";
+										} ?> class="<?php if ($data['status'] == "Progress") {
+											  echo "blinking";
+										  } ?>" style="
+													<?php if ($data['status'] == 'Open') {
+														echo 'font-weight: bold;';
+													} ?>">
 										<?= $data['status']; ?>
 									</td>
 								</tr>
@@ -422,8 +422,8 @@ function progressHandler(event) {
 					</thead>
 					<tbody>
 						<?php
-                        $return = $this->db->query("SELECT * FROM mesin")->result_array();
-                        ?>
+						$return = $this->db->query("SELECT * FROM mesin")->result_array();
+						?>
 						<?php foreach ($return as $data): ?>
 						<tr>
 							<td>
@@ -511,8 +511,8 @@ function progressHandler(event) {
 						</thead>
 						<tbody>
 							<?php
-                            $return = $this->db->query("SELECT * FROM input_limbah WHERE id ")->result_array();
-                            ?>
+							$return = $this->db->query("SELECT * FROM input_limbah WHERE id ")->result_array();
+							?>
 							<?php foreach ($return as $data): ?>
 							<td>
 								<li class="dropdown" style="list-style-type:none;">
@@ -598,11 +598,12 @@ function exportTableToExcel() {
 	data.forEach(function(row) {
 		// Remove HTML tags and unnecessary spaces from 'Nama Pemohon' column (index 1)
 		var namaPemohon = row[1].replace(/<[^>]+>/g, '').trim(); // trim() removes leading and trailing spaces
+		var jenisLimbah = row[3].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 
 		ws_data.push([
 			namaPemohon, // Nama Pemohon
 			row[2], // Departemen
-			row[3], // Jenis limbah
+			jenisLimbah, // Jenis limbah
 			row[4], // Timbangan awal
 			row[5], // Timbangan akhir
 			row[6], // Quantity mutasi
