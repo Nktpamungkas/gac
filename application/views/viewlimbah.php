@@ -131,7 +131,7 @@
                             <tr>
                                 <td><b>Lokasi</td>
                                 <td><input type="text" class="form-control input-sm" name="lokasi"
-                                        value="<?= $tugas->lokasi; ?>" placeholder="lokasi" required></td>
+                                        value="<?= $tugas->lokasi; ?>" placeholder="lokasi"></td>
                             </tr>
                             <tr>
                                 <td><b>Foto</td>
@@ -160,14 +160,14 @@
                             <tr>
                                 <td><b>Timbangan awal</td>
                                 <td><input type="text" class="form-control input-sm" name="timbangan_awal"
-                                        value="<?= $tugas->timbangan_awal; ?>" placeholder="timbangan_awal" required>
+                                        value="<?= $tugas->timbangan_awal; ?>" placeholder="timbangan_awal">
                                 </td>
 
                             </tr>
                             <tr>
                                 <td><b>Timbangan akhir</td>
                                 <td><input type="text" class="form-control input-sm" name="timbangan_akhir"
-                                        value="<?= $tugas->timbangan_akhir; ?>" placeholder="timbangan_akhir" required>
+                                        value="<?= $tugas->timbangan_akhir; ?>" placeholder="timbangan_akhir">
                                 </td>
 
 
@@ -175,20 +175,20 @@
                             <tr>
                                 <td><b>Quantity mutasi</b></td>
                                 <td><input type="text" class="form-control input-sm" name="quantity_mutasi"
-                                        value="<?= $tugas->quantity_mutasi; ?>" placeholder="quantity_mutasi" required>
+                                        value="<?= $tugas->quantity_mutasi; ?>" placeholder="quantity_mutasi">
                                 </td>
 
                             </tr>
                             <tr>
                                 <td><b>platnomer</b></td>
                                 <td><input type="text" class="form-control input-sm" name="platnomer"
-                                        value="<?= $tugas->platnomer; ?>" placeholder="platnomer" required></td>
+                                        value="<?= $tugas->platnomer; ?>" placeholder="platnomer"></td>
                             </tr>
                             <tr>
                                 <td><b>Catatan</b></td>
                                 <td>
-                                    <textarea name="permasalahan" rows="3" style="width: 100%;"
-                                        required><?= $tugas->permasalahan; ?></textarea>
+                                    <textarea name="permasalahan" rows="3"
+                                        style="width: 100%;"><?= $tugas->permasalahan; ?></textarea>
 
                                 </td>
                             </tr>
@@ -215,7 +215,13 @@
                             <tr>
                                 <td><b>Tanggal</b></td>
                                 <td><?= $tugas->tanggal; ?></td>
-                                <!-- <td><input type="date" class="form-control input-sm" name="tanggal" value="<?= $data['tanggal'] ?>" disabled></td> -->
+                            </tr>
+                            <tr>
+                            <tr>
+                                <td></td>
+                                <td><input type="date" class="form-control input-sm" name="tanggal"
+                                        value="<?= $data['tanggal'] ?>" required></td>
+                            </tr>
                             </tr>
 
                         </table>

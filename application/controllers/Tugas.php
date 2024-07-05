@@ -685,7 +685,7 @@ class Tugas extends CI_Controller
 
             // Ambil data dari form
             $data = array(
-                'tanggal' => date('Y-m-d H:i:s'),
+                'tanggal' => $this->input->post('tanggal'),
                 'jenislimbah' => $this->input->post('jenislimbah'),
                 'dept_pelapor' => $this->input->post('dept_pelapor'),
                 'nama_pelapor' => $this->input->post('nama_pelapor'),
@@ -738,7 +738,7 @@ class Tugas extends CI_Controller
         if ($this->input->server('REQUEST_METHOD') === 'POST') {
             // Ambil data dari form
             $data = array(
-                // 'tanggal' => $this->input->post('tanggal'),
+                'tanggal' => $this->input->post('tanggal'),
                 'jenislimbah' => $this->input->post('jenislimbah'),
                 'dept_pelapor' => $this->input->post('dept_pelapor'),
                 'nama_pelapor' => $this->input->post('nama_pelapor'),
