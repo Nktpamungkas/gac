@@ -29,6 +29,12 @@
     <!-- table -->
     <script src="<?= base_url(); ?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url(); ?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <!-- JSZIP untuk Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <!-- Buttons Excel JS -->
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <!-- Page script -->
     <script>
         $(function () {
@@ -209,7 +215,12 @@
   $(function () {
     $('#example1').DataTable()
     $('#example2').DataTable()
-    $('#example3').DataTable()
+    $('#example3').DataTable({
+        dom: 'Bfrtip', // Menambahkan tombol ke DOM
+        buttons: [
+            'excel' // Menambahkan tombol Excel
+        ]
+    });
     $('#example4').DataTable()
     $('#example5').DataTable()
 })
